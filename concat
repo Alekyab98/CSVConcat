@@ -1,0 +1,41 @@
+import pandas as pd
+import os
+from google.cloud import storage
+
+# Function to concatenate CSV files
+def concatenate_csv_files(folder_path, output_file):
+    all_files = [f for f in os.listdir(folder_path) if f.endswith('.csv')]
+    combined_data = pd.DataFrame()
+
+    for file in all_files:
+        file_path = os.path.join(folder_path, file)
+        df = pd.read_csv(file_path)
+        combined_data = pd.concat([combined_data, df], ignore_index=True)
+
+    combined_data.to_csv(output_file, index=False)
+    print(f"Combined CSV saved as: {output_file}")
+
+# Function to upload CSV file to GCP
+def upload_to_gcp(bucket_name, source_file, destination_blob_name):
+    # Initialize a GCS client
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
+    
+    # Create a blob object from the source file
+    blob = bucket.blob(destination_blob_name)
+    
+    # Upload the file
+    blob.upload_from_filename(source_file)
+    print(f"File {source_file} uploaded to {destination_blob_name} in bucket {bucket_name}.")
+
+# Define paths and parameters
+folder_path = 'path/to/your/folder'  # Replace with the folder containing the CSV files
+output_file = 'combined_data.csv'  # Output file name for the combined CSV
+bucket_name = 'your-gcp-bucket-name'  # Replace with your GCP bucket name
+destination_blob_name = 'combined_data.csv'  # Name of the file in GCP
+
+# Step 1: Concatenate CSV files
+concatenate_csv_files(folder_path, output_file)
+
+# Step 2: Upload combined CSV to GCP
+upload_to_gcp(bucket_name, output_file, destination_blob_name)
