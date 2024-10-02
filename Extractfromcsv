@@ -1,0 +1,21 @@
+import csv
+
+def extract_grafana_expression(input_csv, output_txt):
+    with open(input_csv, 'r') as csv_file:
+        csv_reader = csv.DictReader(csv_file)
+        
+        # Open the output txt file in write mode
+        with open(output_txt, 'w') as txt_file:
+            for row in csv_reader:
+                # Assuming CSV columns are 'view_column_name' and 'grafana_expression'
+                view_column_name = row['view_column_name']
+                grafana_expression = row['grafana_expression']
+                
+                # Write the result in the required format
+                txt_file.write(f"{view_column_name}|{grafana_expression}\n")
+
+# Example usage:
+input_csv = 'input_file.csv'  # Replace with your actual input CSV file path
+output_txt = 'output_file.txt'  # Replace with your desired output TXT file path
+
+extract_grafana_expression(input_csv, output_txt)
