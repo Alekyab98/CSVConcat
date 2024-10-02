@@ -1,0 +1,12 @@
+with open(input_file, 'r') as file:
+    for line_number, line in enumerate(file, start=1):
+        line = line.strip()
+        if line:  # Check for non-empty line
+            parts = line.split('|')
+            if len(parts) == 2:  # Ensure there are exactly two parts
+                kpi_name, query = parts
+                create_csv_for_kpi(kpi_name, query)
+            else:
+                print(f"Invalid line format at line {line_number}: {line}")
+        else:
+            print(f"Empty line at line {line_number}.")
