@@ -1,0 +1,30 @@
+import pandas as pd
+
+def extract_grafana_expression(input_file, output_txt):
+    try:
+        # Read the Excel file directly (assuming it is saved as .xlsx)
+        df = pd.read_excel(input_file)
+
+        with open(output_txt, 'w') as txt_file:
+            for index, row in df.iterrows():
+                # Extract values from the appropriate columns
+                view_column_name = row['view_column_name']  # Adjust based on your actual header name
+                grafana_expression = row['grafana_expression']  # Adjust based on your actual header name
+                
+                # Write the result in the required format
+                txt_file.write(f"{view_column_name}|{grafana_expression}\n")
+
+        print("Successfully processed the Excel file.")
+
+    except FileNotFoundError:
+        print(f"Error: The file {input_file} was not found.")
+    except KeyError as e:
+        print(f"Error: Missing column in Excel - {e}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+# Example usage:
+input_file = r"C:\Users\billaal\Documents\python\create_textfile\AMF.csv.xlsx"
+output_txt = r"C:\Users\billaal\Documents\python\create_textfile\AMF_query.txt"
+
+extract_grafana_expression(input_file, output_txt)
