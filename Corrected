@@ -1,0 +1,25 @@
+import csv
+
+def extract_grafana_expression(input_csv, output_txt):
+    try:
+        with open(input_csv, 'r', encoding='cp1252') as csv_file:  # Specify encoding
+            csv_reader = csv.DictReader(csv_file)
+
+            with open(output_txt, 'w') as txt_file:
+                for row in csv_reader:
+                    view_column_name = row['view_column_name']  # Adjust based on your actual header name
+                    grafana_expression = row['grafana_expression']  # Adjust based on your actual header name
+                    txt_file.write(f"{view_column_name}|{grafana_expression}\n")
+
+    except FileNotFoundError:
+        print(f"Error: The file {input_csv} was not found.")
+    except KeyError as e:
+        print(f"Error: Missing column in CSV - {e}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+# Example usage:
+input_csv = r"C:\Users\billaal\Documents\python\create_textfile\AMF.csv.xlsx"
+output_txt = r"C:\Users\billaal\Documents\python\create_textfile\AMF_query.txt"
+
+extract_grafana_expression(input_csv, output_txt)
