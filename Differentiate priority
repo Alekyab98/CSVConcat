@@ -1,0 +1,38 @@
+import pandas as pd
+
+def categorize_metrics(all_metrics_file, shortlisted_metrics_file, output_txt):
+    try:
+        # Read the CSV files
+        all_metrics_df = pd.read_csv(all_metrics_file)
+        shortlisted_metrics_df = pd.read_csv(shortlisted_metrics_file)
+
+        # Assuming 'metric_name' is the column in both dataframes that holds the metric names
+        # Create a set of shortlisted metric names for faster lookup
+        shortlisted_metrics_set = set(shortlisted_metrics_df['metric_name'].str.strip())
+
+        with open(output_txt, 'w') as txt_file:
+            for index, row in all_metrics_df.iterrows():
+                metric_name = row['metric_name'].strip()  # Adjust based on your actual header name
+                expression = row['grafana_expression'].strip()  # Adjust based on your actual header name
+
+                # Determine if the metric is priority or not
+                priority = 'P1' if metric_name in shortlisted_metrics_set else 'P2'
+
+                # Write to the output file in the specified format
+                txt_file.write(f"{metric_name}|{priority}|{expression}\n")
+
+        print("Successfully categorized metrics and wrote to the output file.")
+
+    except FileNotFoundError:
+        print(f"Error: One of the files was not found.")
+    except KeyError as e:
+        print(f"Error: Missing column in CSV - {e}")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+
+# Example usage:
+all_metrics_file = r"C:\Users\billaal\Documents\python\create_textfile\all_metrics.csv"
+shortlisted_metrics_file = r"C:\Users\billaal\Documents\python\create_textfile\shortlisted_metrics.csv"
+output_txt = r"C:\Users\billaal\Documents\python\create_textfile\categorized_metrics.txt"
+
+categorize_metrics(all_metrics_file, shortlisted_metrics_file, output_txt)
